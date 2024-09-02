@@ -148,6 +148,14 @@
         document.getElementById('note').value = data.note || '';
     }
 
+    // Navigate to the rabbit profile page
+    function goToRabbitProfile() {
+        // Get the current cage number
+        const cageNumber = document.getElementById('rabbitForm').dataset.cageNumber || 1;
+        // Redirect to rabbitinfo.html with the cage number as a query parameter
+        window.location.href = `rabbitinfo.html?cage=${cageNumber}`;
+    }
+
     // Load cage data if available in URL
     window.onload = function () {
         let cageNumber = new URLSearchParams(window.location.search).get('cage');
@@ -158,3 +166,5 @@
         }
     }
 </script>
+</body>
+</html>
