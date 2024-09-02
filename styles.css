@@ -22,26 +22,30 @@ header {
     width: 100%;
     display: flex;
     align-items: center; /* Vertically center the icons and title */
-    justify-content: space-between; /* Space between icons and title */
+    justify-content: center; /* Center the header title */
+    gap: 20px; /* Add space between the icons and the title */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 header .home-icon,
 header .rabbit-icon {
-    background: none;
-    border: none;
-    font-size: 2em; /* Adjust icon size */
+    background: none; /* Remove background */
+    border: none; /* Remove border */
+    padding: 0; /* Remove padding */
+    font-size: 1.5em; /* Adjust icon size */
     cursor: pointer;
-    padding: 0;
     outline: none;
-    color: white; /* Make sure icons are white */
+    color: white; /* Ensure icons are white */
+    display: inline-flex; /* Align icons properly */
+    align-items: center;
+    justify-content: center;
+    margin: 0; /* Set margin to 0 since gap handles spacing */
 }
 
 #headerTitle {
     font-size: 1.5em;
     font-weight: bold;
     text-align: center;
-    flex-grow: 1; /* Make title take up remaining space */
 }
 
 /* Ensuring no unwanted background or borders */
