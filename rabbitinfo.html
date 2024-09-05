@@ -94,6 +94,11 @@
             cursor: pointer;
         }
 
+        /* Style for capitalizing the gender */
+        #gender {
+            text-transform: capitalize; /* Ensure 'Male' or 'Female' has first letter capitalized */
+        }
+
         /* Responsive styling */
         @media (max-width: 768px) {
             .cage-list {
@@ -171,7 +176,7 @@ window.onload = function() {
     document.getElementById('mating').innerText = data.mating === "yes" ? "Yes" : "No";
 
     // Determine and set gender from the index.html 'Gender' field
-    document.getElementById('gender').innerText = data.gender || 'Unknown';
+    document.getElementById('gender').innerText = (data.gender || 'Unknown').toLowerCase().replace(/^\w/, c => c.toUpperCase());
 
     // Update edit link dynamically to point to the correct cage number
     document.getElementById('edit-link').href = `index.html?cage=${cageNumber}`;
