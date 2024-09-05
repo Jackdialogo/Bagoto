@@ -169,6 +169,10 @@
             document.getElementById('pregnancy-due').innerText = data.dueDate || 'Unknown';
             document.getElementById('mating').innerText = data.mating === "yes" ? "Yes" : "No";
 
+            //Determine and set gender
+            const isPregnant = data.pregnancyStart && data.pregnancyDue;
+            document.getElementById('gender').innerText = isPregnant ? 'Female' : 'Male';
+
             // Update edit link dynamically to point to the correct cage number
             document.getElementById('edit-link').href = `index.html?cage=${cageNumber}`;
         }
