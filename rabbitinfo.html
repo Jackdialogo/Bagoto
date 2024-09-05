@@ -160,7 +160,7 @@
             document.getElementById('age').innerText = calculateAge(data.birthDate) || 'Unknown';
             document.getElementById('weight').innerText = data.weight || 'Unknown';
             document.getElementById('family').innerText = data.family || 'Unknown';
-            document.getElementById('food-intake').innerText = data.foodIntake || 'Unknown';
+            document.getElementById('food-intake').innerText = data.foodIntake === "normal" ? "Normal" : "Irregular";
             document.getElementById('pregnancy-start').innerText = data.pregnancyStart || 'Unknown';
             document.getElementById('pregnancy-due').innerText = data.dueDate || 'Unknown';
             document.getElementById('mating').innerText = data.mating === "yes" ? "Yes" : "No";
