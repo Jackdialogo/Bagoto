@@ -16,6 +16,10 @@
     <div id="cageDetails">
         <form id="rabbitForm" onsubmit="saveData(event)">
             <div>
+                <label for="serialNumber">SERIAL NUMBER:</label>
+                <input type="text" id="serialNumber" name="serialNumber">
+            </div>
+            <div>
                 <label for="breed">BREED:</label>
                 <input type="text" id="breed" name="breed">
             </div>
@@ -121,6 +125,7 @@
 
     function loadData(cageNumber) {
         let data = JSON.parse(localStorage.getItem(`rabbitData${cageNumber}`)) || {};  // Load using consistent key
+        document.getElementById('serialNumber').value = data.serialNumber || ''; // Load serial number
         document.getElementById('breed').value = data.breed || '';
         document.getElementById('family').value = data.family || '';
         document.getElementById('birthDate').value = data.birthDate || '';
