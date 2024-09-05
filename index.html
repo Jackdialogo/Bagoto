@@ -35,11 +35,22 @@
                 <label for="weight">WEIGHT:</label>
                 <input type="text" id="weight" name="weight">
             </div>
+
+            <!-- Gender Section -->
             <div>
+                <label for="gender">GENDER:</label>
+                <label><input type="radio" name="gender" value="male" onclick="togglePregnancy(false)"> MALE</label>
+                <label><input type="radio" name="gender" value="female" onclick="togglePregnancy(true)"> FEMALE</label>
+            </div>
+
+            <!-- Pregnant Option (only for Female) -->
+            <div id="pregnancyOption" style="display: none;">
                 <label>PREGNANT:</label>
                 <label><input type="radio" name="pregnant" value="yes" onclick="togglePregnancyDetails(true)"> YES</label>
                 <label><input type="radio" name="pregnant" value="no" onclick="togglePregnancyDetails(false)"> NO</label>
             </div>
+
+            <!-- Pregnancy Details (shown if Pregnant is Yes) -->
             <div id="pregnancyDetails" style="display: none;">
                 <div>
                     <label for="matedRabbit">MATED RABBIT:</label>
@@ -54,6 +65,8 @@
                     <input type="date" id="dueDate" name="dueDate">
                 </div>
             </div>
+
+            <!-- Other Fields -->
             <div>
                 <label for="foodIntake">FOOD INTAKE:</label>
                 <label><input type="radio" name="foodIntake" value="normal"> NORMAL</label>
@@ -88,6 +101,7 @@
     function goHome() {
         document.getElementById('homePage').style.display = 'block';
         document.getElementById('cageDetails').style.display = 'none';
+        document.getElementById('pregnancyOption').style.display = 'none';
         document.getElementById('pregnancyDetails').style.display = 'none';
         document.getElementById('headerTitle').innerHTML = '<strong>RABBIT CAGE</strong>'; // Reset header title
     }
@@ -96,10 +110,13 @@
         document.getElementById('homePage').style.display = 'none';
         document.getElementById('cageDetails').style.display = 'block';
         loadData(cageNumber);
-        // Store the current cage number
         document.getElementById('rabbitForm').dataset.cageNumber = cageNumber;
-        // Update the header title to show the cage number
         document.getElementById('headerTitle').innerHTML = `<strong>CAGE ${cageNumber}</strong>`;
+    }
+
+    function togglePregnancy(show) {
+        document.getElementById('pregnancyOption').style.display = show ? 'block' : 'none';
+        document.getElementById('pregnancyDetails').style.display = 'none'; // Hide pregnancy details if gender changes
     }
 
     function togglePregnancyDetails(show) {
@@ -115,43 +132,44 @@
         data.forEach((value, key) => {
             obj[key] = value;
         });
-        localStorage.setItem(`rabbitData${cageNumber}`, JSON.stringify(obj));  // Save using consistent key
+        localStorage.setItem(`rabbitData${cageNumber}`, JSON.stringify(obj));
         alert('Data saved successfully!');
         goToRabbitProfile();
     }
 
     function loadData(cageNumber) {
-        let data = JSON.parse(localStorage.getItem(`rabbitData${cageNumber}`)) || {};  // Load using consistent key
-        document.getElementById('serialNumber').value = data.serialNumber || ''; // Load serial number
+        let data = JSON.parse(localStorage.getItem(`rabbitData${cageNumber}`)) || {};
+        document.getElementById('serialNumber').value = data.serialNumber || '';
         document.getElementById('breed').value = data.breed || '';
         document.getElementById('family').value = data.family || '';
         document.getElementById('birthDate').value = data.birthDate || '';
         document.getElementById('weight').value = data.weight || '';
+        
+        if (data.gender === "female") {
+            document.querySelector('input[name="gender"][value="female"]').checked = true;
+            togglePregnancy(true);
+        } else {
+            document.querySelector('input[name="gender"][value="male"]').checked = true;
+            togglePregnancy(false);
+        }
+
         if (data.pregnant === "yes") {
             document.querySelector('input[name="pregnant"][value="yes"]').checked = true;
             togglePregnancyDetails(true);
-            document.getElementById('matedRabbit').value = data.matedRabbit || '';
-            document.getElementById('pregnancyStart').value = data.pregnancyStart || '';
-            document.getElementById('dueDate').value = data.dueDate || '';
         } else {
             document.querySelector('input[name="pregnant"][value="no"]').checked = true;
             togglePregnancyDetails(false);
         }
-        if (data.foodIntake === "normal") {
-            document.querySelector('input[name="foodIntake"][value="normal"]').checked = true;
-        } else {
-            document.querySelector('input[name="foodIntake"][value="irregular"]').checked = true;
-        }
-        if (data.mating === "yes") {
-            document.querySelector('input[name="mating"][value="yes"]').checked = true;
-        } else {
-            document.querySelector('input[name="mating"][value="no"]').checked = true;
-        }
+
+        document.getElementById('matedRabbit').value = data.matedRabbit || '';
+        document.getElementById('pregnancyStart').value = data.pregnancyStart || '';
+        document.getElementById('dueDate').value = data.dueDate || '';
+        document.querySelector(`input[name="foodIntake"][value="${data.foodIntake || 'normal'}"]`).checked = true;
+        document.querySelector(`input[name="mating"][value="${data.mating || 'no'}"]`).checked = true;
         document.getElementById('note').value = data.note || '';
     }
 
     function goToRabbitProfile() {
-        // Get the current cage number
         const cageNumber = document.getElementById('rabbitForm').dataset.cageNumber || 1;
         const form = document.getElementById('rabbitForm');
         const data = new FormData(form);
@@ -159,7 +177,6 @@
         data.forEach((value, key) => {
             params.append(key, value);
         });
-        // Redirect to rabbitinfo.html with query parameters
         window.location.href = `rabbitinfo.html?cage=${cageNumber}&${params.toString()}`;
     }
 
