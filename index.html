@@ -17,7 +17,7 @@
         <form id="rabbitForm" onsubmit="saveData(event)">
             <div>
                 <label for="serialNumber">SERIAL NUMBER:</label>
-                <input type="text" id="serialNumber" name="serialNumber">
+                <input type="text" id="serialNumber" name="serialNumber" required>
             </div>
             <div>
                 <label for="breed">BREED:</label>
@@ -89,7 +89,7 @@
         document.getElementById('homePage').style.display = 'block';
         document.getElementById('cageDetails').style.display = 'none';
         document.getElementById('pregnancyDetails').style.display = 'none';
-        document.getElementById('headerTitle').innerHTML = '<strong>RABBIT CAGE </strong>'; // Reset header title
+        document.getElementById('headerTitle').innerHTML = '<strong>RABBIT CAGE</strong>'; // Reset header title
     }
 
     function showCageDetails(cageNumber) {
@@ -104,9 +104,6 @@
 
     function togglePregnancyDetails(show) {
         document.getElementById('pregnancyDetails').style.display = show ? 'block' : 'none';
-        // Ensure the header title remains unaffected
-        let currentTitle = document.getElementById('headerTitle').innerHTML;
-        console.log("Current Header Title:", currentTitle);
     }
 
     function saveData(event) {
@@ -120,7 +117,7 @@
         });
         localStorage.setItem(`rabbitData${cageNumber}`, JSON.stringify(obj));  // Save using consistent key
         alert('Data saved successfully!');
-        goHome();
+        goToRabbitProfile();
     }
 
     function loadData(cageNumber) {
@@ -153,15 +150,19 @@
         document.getElementById('note').value = data.note || '';
     }
 
-    // Navigate to the rabbit profile page
     function goToRabbitProfile() {
         // Get the current cage number
         const cageNumber = document.getElementById('rabbitForm').dataset.cageNumber || 1;
-        // Redirect to rabbitinfo.html with the cage number as a query parameter
-        window.location.href = `rabbitinfo.html?cage=${cageNumber}`;
+        const form = document.getElementById('rabbitForm');
+        const data = new FormData(form);
+        const params = new URLSearchParams();
+        data.forEach((value, key) => {
+            params.append(key, value);
+        });
+        // Redirect to rabbitinfo.html with query parameters
+        window.location.href = `rabbitinfo.html?cage=${cageNumber}&${params.toString()}`;
     }
 
-    // Load cage data if available in URL
     window.onload = function () {
         let cageNumber = new URLSearchParams(window.location.search).get('cage');
         if (cageNumber) {
