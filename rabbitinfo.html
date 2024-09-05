@@ -77,6 +77,10 @@
             margin: 8px 0;
         }
 
+        .profile-details .label {
+            font-weight: bold; /* Make labels bold */
+        }
+
         .edit-details {
             background-color: #4CAF50;
             color: #fff;
@@ -129,18 +133,18 @@
         </div>
         <h2 id="breed">Breed</h2>
         <div class="profile-details">
-            <p>Serial No.: <span id="serial-no">Unknown</span></p>
-            <p>Cage No.: <span id="cage-no">1</span></p>
-            <p>Age: <span id="age">Unknown</span></p>
-            <p>Weight: <span id="weight">Unknown</span></p>
-            <p>Family: <span id="family">Unknown</span></p>
-            <p>Food Intake: <span id="food-intake">Unknown</span></p>
-            <p>Pregnancy Start: <span id="pregnancy-start">Unknown</span></p>
-            <p>Pregnancy Due: <span id="pregnancy-due">Unknown</span></p>
-            <p>Eligible for Mating: <span id="mating">Unknown</span></p>
+            <p><span class="label">Serial No.:</span> <span id="serial-no">Unknown</span></p>
+            <p><span class="label">Cage No.:</span> <span id="cage-no">1</span></p>
+            <p><span class="label">Age:</span> <span id="age">Unknown</span></p>
+            <p><span class="label">Weight:</span> <span id="weight">Unknown</span></p>
+            <p><span class="label">Family:</span> <span id="family">Unknown</span></p>
+            <p><span class="label">Food Intake:</span> <span id="food-intake">Unknown</span></p>
+            <p><span class="label">Pregnancy Start:</span> <span id="pregnancy-start">Unknown</span></p>
+            <p><span class="label">Pregnancy Due:</span> <span id="pregnancy-due">Unknown</span></p>
+            <p><span class="label">Eligible for Mating:</span> <span id="mating">Unknown</span></p>
         </div>
         <div>
-            <a href="#" class="edit-details" id="edit-link">Edit Details</a>
+            <a href="index.html?cage=1" class="edit-details" id="edit-link">Edit Details</a>
         </div>
     </div>
 
@@ -155,12 +159,12 @@
 
             // Update profile details
             document.getElementById('breed').innerText = data.breed || 'Unknown';
-            document.getElementById('serial-no').innerText = data.serialNumber || 'Unknown';
+            document.getElementById('serial-no').innerText = data.serialNumber || 'Unknown'; // Adjusted key
             document.getElementById('cage-no').innerText = cageNumber;
             document.getElementById('age').innerText = calculateAge(data.birthDate) || 'Unknown';
             document.getElementById('weight').innerText = data.weight || 'Unknown';
             document.getElementById('family').innerText = data.family || 'Unknown';
-            document.getElementById('food-intake').innerText = data.foodIntake === "normal" ? "Normal" : "Irregular";
+            document.getElementById('food-intake').innerText = data.foodIntake === "normal" ? "Normal" : "Irregular"; // Adjusted capitalization
             document.getElementById('pregnancy-start').innerText = data.pregnancyStart || 'Unknown';
             document.getElementById('pregnancy-due').innerText = data.dueDate || 'Unknown';
             document.getElementById('mating').innerText = data.mating === "yes" ? "Yes" : "No";
