@@ -203,10 +203,6 @@ form .buttons button[type="button"]:hover {
     background-color: #e53935;
 }
 
-#gender {
-    text-transform: capitalize;
-}
-
 /* Pregnancy details styling */
 #pregnancyDetails {
     background-color: white;
