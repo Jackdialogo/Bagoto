@@ -129,10 +129,15 @@
         </div>
         <h2 id="breed">Breed</h2>
         <div class="profile-details">
+            <p>Serial No.: <span id="serial-no">Unknown</span></p>
             <p>Cage No.: <span id="cage-no">1</span></p>
             <p>Age: <span id="age">Unknown</span></p>
-            <p>Gender: <span id="gender">Unknown</span></p>
             <p>Weight: <span id="weight">Unknown</span></p>
+            <p>Family: <span id="family">Unknown</span></p>
+            <p>Food Intake: <span id="food-intake">Unknown</span></p>
+            <p>Pregnancy Start: <span id="pregnancy-start">Unknown</span></p>
+            <p>Pregnancy Due: <span id="pregnancy-due">Unknown</span></p>
+            <p>Eligible for Mating: <span id="mating">Unknown</span></p>
         </div>
         <div>
             <a href="index.html?cage=1" class="edit-details" id="edit-link">Edit Details</a>
@@ -150,10 +155,15 @@
 
             // Update profile details
             document.getElementById('breed').innerText = data.breed || 'Unknown';
+            document.getElementById('serial-no').innerText = data.serial || 'Unknown';
             document.getElementById('cage-no').innerText = cageNumber;
             document.getElementById('age').innerText = calculateAge(data.birthDate) || 'Unknown';
             document.getElementById('weight').innerText = data.weight || 'Unknown';
-            document.getElementById('gender').innerText = data.pregnant === "yes" ? "Female" : "Male";
+            document.getElementById('family').innerText = data.family || 'Unknown';
+            document.getElementById('food-intake').innerText = data.foodIntake || 'Unknown';
+            document.getElementById('pregnancy-start').innerText = data.pregnancyStart || 'Unknown';
+            document.getElementById('pregnancy-due').innerText = data.dueDate || 'Unknown';
+            document.getElementById('mating').innerText = data.mating === "yes" ? "Yes" : "No";
 
             // Update edit link dynamically to point to the correct cage number
             document.getElementById('edit-link').href = `index.html?cage=${cageNumber}`;
@@ -182,4 +192,3 @@
     </script>
 </body>
 </html>
-
