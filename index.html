@@ -81,9 +81,11 @@
                 <label for="note">NOTE:</label>
                 <textarea id="note" name="note"></textarea>
             </div>
+
             <div class="buttons">
                 <button type="submit">SUBMIT</button>
                 <button type="button" onclick="goHome()">CANCEL</button>
+                <button type="button" onclick="deleteCage()">DELETE CAGE</button> <!-- Delete Cage Button -->
             </div>
         </form>
     </div>
@@ -95,9 +97,12 @@
         <button onclick="showCageDetails(4)">CAGE 4</button>
         <button onclick="showCageDetails(5)">CAGE 5</button>
         <button onclick="showCageDetails(6)">CAGE 6</button>
+        <button onclick="addNewCage()">ADD NEW CAGE</button> <!-- Add New Cage Button -->
     </div>
 
 <script>
+    let totalCages = 6; // Keeps track of the total number of cages
+
     function goHome() {
         document.getElementById('homePage').style.display = 'block';
         document.getElementById('cageDetails').style.display = 'none';
@@ -178,6 +183,26 @@
             params.append(key, value);
         });
         window.location.href = `rabbitinfo.html?cage=${cageNumber}&${params.toString()}`;
+    }
+
+    // New function to delete cage data
+    function deleteCage() {
+        const cageNumber = document.getElementById('rabbitForm').dataset.cageNumber;
+        if (confirm(`Are you sure you want to delete data for Cage ${cageNumber}?`)) {
+            localStorage.removeItem(`rabbitData${cageNumber}`);
+            alert(`Data for Cage ${cageNumber} has been deleted.`);
+            goHome();
+        }
+    }
+
+    // New function to add a new cage
+    function addNewCage() {
+        totalCages++;
+        const homePage = document.getElementById('homePage');
+        const newCageButton = document.createElement('button');
+        newCageButton.textContent = `CAGE ${totalCages}`;
+        newCageButton.onclick = () => showCageDetails(totalCages);
+        homePage.insertBefore(newCageButton, homePage.lastElementChild);
     }
 
     window.onload = function () {
