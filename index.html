@@ -34,7 +34,7 @@
                 <select id="rabbitType" name="rabbitType">
                     <option value="fatteners">Fatteners</option>
                     <option value="breeder">Breeder</option>
-                    <option value="doe">Doe</option>
+                    <option value="doe">Doe</option> <!-- Updated here -->
                 </select>
             </div>
 
@@ -190,80 +190,4 @@
 
     function updateCageList() {
         const cageButtons = document.getElementById('cageButtons');
-        cageButtons.innerHTML = ''; // Clear existing list
-
-        cages.forEach((cage, index) => {
-            const button = document.createElement('button');
-            button.innerText = `Cage ${index + 1}: ${cage.serialNumber}`;
-            button.onclick = () => loadCageDetails(index);
-            cageButtons.appendChild(button);
-        });
-    }
-
-    function loadCageDetails(index) {
-        const cage = cages[index];
-        document.getElementById('serialNumber').value = cage.serialNumber;
-        document.getElementById('breed').value = cage.breed;
-        document.getElementById('family').value = cage.family;
-        document.getElementById('rabbitType').value = cage.rabbitType;
-        document.getElementById('birthDate').value = cage.birthDate;
-        document.getElementById('weight').value = cage.weight;
-        document.querySelector(`input[name="gender"][value="${cage.gender}"]`).checked = true;
-        document.querySelector(`input[name="foodIntake"][value="${cage.foodIntake}"]`).checked = true;
-        document.querySelector(`input[name="mating"][value="${cage.mating}"]`).checked = true;
-        document.getElementById('matingDate').value = cage.matingDate;
-        document.getElementById('note').value = cage.note;
-        document.getElementById('pregnancyStart').value = cage.pregnancyStart;
-        document.getElementById('dueDate').value = cage.dueDate;
-
-        // Show/hide options based on loaded cage details
-        togglePregnancy(cage.gender === 'female');
-        document.getElementById('homePage').style.display = 'none';
-        document.getElementById('cageDetails').style.display = 'block';
-        document.getElementById('headerTitle').innerText = `Edit Cage: ${cage.serialNumber}`;
-    }
-
-    function togglePregnancy(isFemale) {
-        document.getElementById('pregnancyOption').style.display = isFemale ? 'block' : 'none';
-        document.getElementById('pregnancyDetails').style.display = 'none'; // Hide by default
-    }
-
-    function togglePregnancyDetails(isPregnant) {
-        document.getElementById('pregnancyDetails').style.display = isPregnant ? 'block' : 'none';
-    }
-
-    function clearForm() {
-        document.getElementById('rabbitForm').reset();
-        document.getElementById('foodProductionDate').style.display = 'none'; // Hide food production date
-        document.getElementById('pregnancyDetails').style.display = 'none'; // Hide pregnancy details
-        document.getElementById('pregnancyOption').style.display = 'none'; // Hide pregnancy option
-        document.getElementById('matingDateContainer').style.display = 'none'; // Hide mating date container
-        document.getElementById('nextMatingDate').value = ''; // Clear next mating date
-    }
-
-    function deleteCage() {
-        const serialNumber = document.getElementById('serialNumber').value;
-        const cageIndex = cages.findIndex(cage => cage.serialNumber === serialNumber);
-
-        if (cageIndex !== -1) { // Check if the cage exists
-            if (confirm("Are you sure you want to delete this cage?")) {
-                cages.splice(cageIndex, 1); // Remove cage by index
-                localStorage.setItem('cages', JSON.stringify(cages)); // Update localStorage
-                alert("Cage deleted successfully!");
-                clearForm();
-                goHome(); // Go back to home page
-            }
-        } else {
-            alert("Cage not found!"); // Alert if the cage doesn't exist
-        }
-    }
-
-    function addNewCage() {
-        clearForm();
-        document.getElementById('homePage').style.display = 'none';
-        document.getElementById('cageDetails').style.display = 'block';
-        document.getElementById('headerTitle').innerText = 'Add New Cage';
-    }
-</script>
-</body>
-</html>
+        cageButtons.innerHTML = ''; // Clear
