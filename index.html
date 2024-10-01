@@ -27,23 +27,10 @@
                 <label for="family">FAMILY:</label>
                 <input type="text" id="family" name="family">
             </div>
-
-            <!-- Changed Dough to Doe -->
-            <div>
-                <label for="rabbitType">RABBIT TYPE:</label>
-                <select id="rabbitType" name="rabbitType">
-                    <option value="fatteners">Fatteners</option>
-                    <option value="breeder">Breeder</option>
-                    <option value="doe">Doe</option> <!-- Updated here -->
-                </select>
-            </div>
-
             <div>
                 <label for="birthDate">DATE OF BIRTH:</label>
-                <input type="date" id="birthDate" name="birthDate" onchange="calculateFoodProductionDate()">
+                <input type="date" id="birthDate" name="birthDate">
             </div>
-            <div id="foodProductionDate" style="display: none;"></div> <!-- New div for food production date -->
-
             <div>
                 <label for="weight">WEIGHT:</label>
                 <input type="text" id="weight" name="weight">
@@ -81,22 +68,11 @@
                 <label><input type="radio" name="foodIntake" value="normal"> NORMAL</label>
                 <label><input type="radio" name="foodIntake" value="irregular"> IRREGULAR</label>
             </div>
-
             <div>
                 <label>ELIGIBLE FOR MATING:</label>
-                <label><input type="radio" name="mating" value="yes" onclick="showMatingDate(true)"> YES</label>
-                <label><input type="radio" name="mating" value="no" onclick="showMatingDate(false)"> NO</label>
+                <label><input type="radio" name="mating" value="yes"> YES</label>
+                <label><input type="radio" name="mating" value="no"> NO</label>
             </div>
-
-            <div id="matingDateContainer" style="display: none;">
-                <label for="matingDate">MATING DATE:</label>
-                <input type="date" id="matingDate" name="matingDate" onchange="calculateNextMatingDate()">
-                <div>
-                    <label for="nextMatingDate">NEXT MATING DATE:</label>
-                    <input type="text" id="nextMatingDate" name="nextMatingDate" readonly>
-                </div>
-            </div>
-
             <div>
                 <label for="note">NOTE:</label>
                 <textarea id="note" name="note"></textarea>
@@ -106,7 +82,7 @@
                 <button type="submit">SUBMIT</button>
                 <button type="button" onclick="goHome()">CANCEL</button>
                 <button type="button" onclick="deleteCage()">DELETE CAGE</button>
-                <button type="button" onclick="clearForm()">CLEAR FORM</button>
+                <button type="button" onclick="clearForm()">CLEAR FORM</button> <!-- New Clear Form Button -->
             </div>
         </form>
     </div>
@@ -117,33 +93,7 @@
     </div>
 
 <script>
-    let cages = JSON.parse(localStorage.getItem('cages')) || []; 
-
-    function calculateFoodProductionDate() {
-        const birthDate = new Date(document.getElementById('birthDate').value);
-        const foodProductionDateDiv = document.getElementById('foodProductionDate');
-        if (birthDate) {
-            const productionDate = new Date(birthDate);
-            productionDate.setMonth(productionDate.getMonth() + 2); // 2 months later
-            foodProductionDateDiv.innerHTML = `Rabbit will be ready for food production around ${productionDate.toDateString()}`;
-            foodProductionDateDiv.style.display = 'block'; // Show the div
-        } else {
-            foodProductionDateDiv.style.display = 'none'; // Hide if no birth date
-        }
-    }
-
-    function showMatingDate(show) {
-        document.getElementById('matingDateContainer').style.display = show ? 'block' : 'none';
-    }
-
-    function calculateNextMatingDate() {
-        const matingDate = new Date(document.getElementById('matingDate').value);
-        if (matingDate) {
-            const nextMatingDate = new Date(matingDate);
-            nextMatingDate.setMonth(nextMatingDate.getMonth() + 1); // 1 month later
-            document.getElementById('nextMatingDate').value = nextMatingDate.toDateString();
-        }
-    }
+    let cages = JSON.parse(localStorage.getItem('cages')) || {}; // Store dynamically added cages
 
     function goHome() {
         document.getElementById('homePage').style.display = 'block';
@@ -154,40 +104,128 @@
         updateCageList();
     }
 
+    function addNewCage() {
+        // Determine the next available cage ID starting from 1
+        let newCageId = 1;
+        while (cages[newCageId] !== undefined) {
+            newCageId++;
+        }
+        cages[newCageId] = {}; 
+        localStorage.setItem('cages', JSON.stringify(cages)); 
+        updateCageList(); 
+        document.getElementById('headerTitle').innerHTML = `<strong>CAGE ${newCageId}</strong>`; // Update the header
+        showCageDetails(newCageId); // Show the new cage details immediately
+    }
+
+    function showCageDetails(cageNumber) {
+        document.getElementById('homePage').style.display = 'none';
+        document.getElementById('cageDetails').style.display = 'block';
+        loadData(cageNumber); 
+        document.getElementById('rabbitForm').dataset.cageNumber = cageNumber;
+        document.getElementById('headerTitle').innerHTML = `<strong>CAGE ${cageNumber}</strong>`;
+    }
+
+    function togglePregnancy(show) {
+        document.getElementById('pregnancyOption').style.display = show ? 'block' : 'none';
+        document.getElementById('pregnancyDetails').style.display = 'none'; 
+    }
+
+    function togglePregnancyDetails(show) {
+        document.getElementById('pregnancyDetails').style.display = show ? 'block' : 'none';
+    }
+
     function saveData(event) {
-        event.preventDefault(); // Prevent form submission
+        event.preventDefault();
+        const form = document.getElementById('rabbitForm');
+        const cageNumber = form.dataset.cageNumber;
+        const data = new FormData(form);
+        const obj = {};
+        data.forEach((value, key) => {
+            obj[key] = value;
+        });
+        localStorage.setItem(`rabbitData${cageNumber}`, JSON.stringify(obj));
+        alert('Data saved successfully!');
+        goToRabbitProfile();
+    }
 
-        const serialNumber = document.getElementById('serialNumber').value;
+    function loadData(cageNumber) {
+        let data = JSON.parse(localStorage.getItem(`rabbitData${cageNumber}`)) || {};
+        document.getElementById('serialNumber').value = data.serialNumber || '';
+        document.getElementById('breed').value = data.breed || '';
+        document.getElementById('family').value = data.family || '';
+        document.getElementById('birthDate').value = data.birthDate || '';
+        document.getElementById('weight').value = data.weight || '';
 
-        // Check if serial number already exists
-        if (cages.some(cage => cage.serialNumber === serialNumber)) {
-            alert("Cage with this serial number already exists!");
-            return; // Exit if duplicate
+        if (data.gender === "female") {
+            document.querySelector('input[name="gender"][value="female"]').checked = true;
+            togglePregnancy(true);
+        } else {
+            document.querySelector('input[name="gender"][value="male"]').checked = true;
+            togglePregnancy(false);
         }
 
-        const cageData = {
-            serialNumber: serialNumber,
-            breed: document.getElementById('breed').value,
-            family: document.getElementById('family').value,
-            rabbitType: document.getElementById('rabbitType').value,
-            birthDate: document.getElementById('birthDate').value,
-            weight: document.getElementById('weight').value,
-            gender: document.querySelector('input[name="gender"]:checked')?.value,
-            foodIntake: document.querySelector('input[name="foodIntake"]:checked')?.value,
-            mating: document.querySelector('input[name="mating"]:checked')?.value,
-            matingDate: document.getElementById('matingDate').value,
-            note: document.getElementById('note').value,
-            pregnancyStart: document.getElementById('pregnancyStart').value,
-            dueDate: document.getElementById('dueDate').value,
-        };
+        if (data.pregnant === "yes") {
+            document.querySelector('input[name="pregnant"][value="yes"]').checked = true;
+            togglePregnancyDetails(true);
+        } else {
+            document.querySelector('input[name="pregnant"][value="no"]').checked = true;
+            togglePregnancyDetails(false);
+        }
 
-        cages.push(cageData); // Add new cage data to the list
-        localStorage.setItem('cages', JSON.stringify(cages)); // Save cages to localStorage
+        document.getElementById('matedRabbit').value = data.matedRabbit || '';
+        document.getElementById('pregnancyStart').value = data.pregnancyStart || '';
+        document.getElementById('dueDate').value = data.dueDate || '';
+        document.querySelector(`input[name="foodIntake"][value="${data.foodIntake || 'normal'}"]`).checked = true;
+        document.querySelector(`input[name="mating"][value="${data.mating || 'no'}"]`).checked = true;
+        document.getElementById('note').value = data.note || '';
+    }
 
-        alert("Cage added successfully!");
-        goHome(); // Go back to home page
+    function goToRabbitProfile() {
+        const cageNumber = document.getElementById('rabbitForm').dataset.cageNumber || 1;
+        const form = document.getElementById('rabbitForm');
+        const data = new FormData(form);
+        const params = new URLSearchParams();
+        data.forEach((value, key) => {
+            params.append(key, value);
+        });
+        window.location.href = `rabbitinfo.html?cage=${cageNumber}&${params.toString()}`;
     }
 
     function updateCageList() {
-        const cageButtons = document.getElementById('cageButtons');
-        cageButtons.innerHTML = ''; // Clear
+        const cageButtonsDiv = document.getElementById('cageButtons');
+        cageButtonsDiv.innerHTML = ''; // Clear existing buttons
+        for (let cageNumber in cages) {
+            const button = document.createElement('button');
+            button.innerText = `CAGE ${cageNumber}`;
+            button.onclick = () => showCageDetails(cageNumber);
+            cageButtonsDiv.appendChild(button);
+        }
+    }
+
+    function deleteCage() {
+        const cageNumber = document.getElementById('rabbitForm').dataset.cageNumber; // Get the current cage number
+        if (confirm(`Are you sure you want to delete Cage ${cageNumber}?`)) {
+            delete cages[cageNumber]; 
+            localStorage.setItem('cages', JSON.stringify(cages)); 
+            localStorage.removeItem(`rabbitData${cageNumber}`); // Remove the associated data from localStorage
+            alert(`Cage ${cageNumber} deleted successfully!`);
+            
+            // If the current cage is deleted, show the first available cage
+            const remainingCages = Object.keys(cages);
+            if (remainingCages.length > 0) {
+                const firstCageNumber = remainingCages[0]; // Get the first available cage
+                showCageDetails(firstCageNumber);
+            } else {
+                goHome(); // Go back to home if no cages left
+            }
+        }
+    }
+
+    function clearForm() {
+        document.getElementById('rabbitForm').reset(); // Reset the form fields
+        togglePregnancy(false); // Hide pregnancy options
+        togglePregnancyDetails(false); // Hide pregnancy details
+    }
+</script>
+</body>
+</html>
